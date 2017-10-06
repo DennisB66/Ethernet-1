@@ -52,7 +52,8 @@ int EthernetClient::connect(IPAddress ip, uint16_t port) {
 
   _srcport++;
   if (_srcport == 0) _srcport = 49152;          //Use IANA recommended ephemeral port range 49152-65535
-  socket(_sock, SnMR::TCP, _srcport, 0);
+//socket(_sock, SnMR::TCP, _srcport, 0);
+  socket(_sock, SnMR::TCP, _srcport, SnMR::ND); //Required for WebRadio (see https://forum.arduino.cc/index.php?topic=217183.msg2795031#msg2795031)
 
   if (!::connect(_sock, rawIPAddress(ip), port)) {
     _sock = MAX_SOCK_NUM;
@@ -170,8 +171,4 @@ EthernetClient::operator bool() {
 
 bool EthernetClient::operator==(const EthernetClient& rhs) {
   return _sock == rhs._sock && _sock != MAX_SOCK_NUM && rhs._sock != MAX_SOCK_NUM;
-}
-
-uint8_t EthernetClient::getSocketNumber() {
-  return _sock;
 }
